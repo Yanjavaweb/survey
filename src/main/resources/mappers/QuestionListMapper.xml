@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.QuestionListMapper">
+    <insert id="insertQuestion">
+        insert into question_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            <if test="type != null">
+                type ,
+            </if>
+            <if test="contentList != null">
+                content_list
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="number != null">
+                #{number},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
+            <if test="contentList != null">
+                #{content}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateQuestion">
+        update question_list
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="number != null">
+                number = #{number},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="contentList != null">
+                content_list = #{content}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteQuestion">
+        delete from question_list
+        where id=#{id}
+    </delete>
+
+    <select id="selectAll" resultType="com.survey.entity.QuestionList">
+        select id,number,type,content_list
+        from question_list
+    </select>
+    <select id="selectByType" resultType="com.survey.entity.QuestionList">
+        select `content_list`
+        from question_list
+        where type = #{type}
+        group by `type`
+    </select>
+    <select id="selectByNumber" resultType="com.survey.entity.QuestionList">
+        select id,number,type,content_list
+        from question_list
+        where number = #{number}
+    </select>
+    <select id="selectContentList" resultType="com.survey.entity.QuestionList">
+        select `content_list`
+        from question_list
+        group by `type`
+    </select>
+</mapper>

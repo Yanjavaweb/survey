@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.FriendCircleMapper">
+    <insert id="createFriendCircle">
+        insert into `friend_circle`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                `flag_id`,
+            </if>
+            <if test="text != null">
+                `text`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                #{flagId},
+            </if>
+            <if test="text != null">
+                #{text}
+            </if>
+        </trim>
+    </insert>
+    <insert id="createImage">
+        insert into `image`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="circleId != null">
+                `circle_id`,
+            </if>
+            <if test="images != null">
+                `images`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="circleId != null">
+                #{circleId},
+            </if>
+            <if test="images != null">
+                #{images}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateCount">
+        update `friend_circle`
+        <set>
+            <if test="count != null">
+                `count` =  `count` + 1
+            </if>
+        </set>
+        where `id` = #{circleId}
+    </update>
+    <select id="getCircleId" resultType="java.lang.Integer">
+        select `id`
+        from `friend_circle`
+        where `flag_id` = #{flagId} and `text` = #{text}
+    </select>
+    <select id="selectAll" resultType="com.survey.entity.FriendCircle">
+        select `flag_id`, `text`
+        from `friend_circle`
+    </select>
+    <select id="getAll" resultType="com.survey.entity.FriendCircleDateVo">
+        SELECT u.`name`, f.`flag_name` as flagName, f.`money`, f.`id` as flagId, c.`id` as circleId,  c.`count`, c.`text`, c.`create_time` as createTime,  i.`images`
+        FROM `user` as u
+        INNER JOIN `flag` as f
+        inner JOIN `friend_circle` as c
+        INNER JOIN `image` as i
+        on u.`id` = f.`user_id` and f.`id` = c.`flag_id` and c.`id` = i.`circle_id`
+    </select>
+    <select id="selectName" resultType="com.survey.entity.User">
+        select `name`
+        from `user`
+    </select>
+    <select id="selectCircuSeeAll" resultType="com.survey.entity.FriendCircleDateVo">
+       SELECT   u.`name`, f.`flag_name` as flagName, f.`money`, f.`id` as flagId, c.`id` as circleId,  c.`count`, c.`text`, c.`create_time` as createTime,  i.`images`
+        FROM `user` as u
+        INNER JOIN `flag` as f
+        inner JOIN `friend_circle` as c
+        INNER JOIN `image` as i
+		INNER JOIN `circu_see` as s
+        on u.`id` = s.user_id and s.`flag_id` = c.`flag_id` and c.`id` = i.`circle_id` and c.`flag_id` = f.`id` and s.user_id = #{userId}
+		GROUP BY c.`id`
+    </select>
+    <select id="getComment" resultType="com.survey.entity.CommentDataVo">
+        select f.`id` as circleId, c.`content`, c.`create_time` as createTime  , u.`name`
+        from  `comment` as c
+        INNER JOIN `user` as u on c.user_id = u.id
+        INNER join `friend_circle` as f
+        on c.circle_id = #{circleId} and f.id = #{circleId}
+    </select>
+<!--    <resultMap id="getCommentAll" type="com.survey.entity.CommentDataVo">-->
+<!--&lt;!&ndash;        <result property="name" column="name"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <collection property="list" ofType="com.survey.entity.CommentDataVos">&ndash;&gt;-->
+<!--            <result property="circleId" column="circleId"/>-->
+<!--            <result property="content" column="content"/>-->
+<!--            <result property="createTime" column="createTime"/>-->
+<!--&lt;!&ndash;        </collection>&ndash;&gt;-->
+<!--    </resultMap>-->
+<!--    <resultMap id="selectCircuSee" type="com.survey.entity.FriendCircleDateVo">-->
+<!--        <result property="name" column="name"/>-->
+<!--        <collection property="list" ofType="com.survey.entity.FriendCircleDateVos">-->
+<!--            <result property="flagId" column="flagId"/>-->
+<!--            <result property="flagName" column="flagName"/>-->
+<!--            <result property="money" column="money"/>-->
+<!--            <result property="circleId" column="circleId"/>-->
+<!--            <result property="count" column="count"/>-->
+<!--            <result property="text" column="text"/>-->
+<!--            <result property="images" column="images"/>-->
+<!--            <result property="createTime" column="createTime"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+<!--    <resultMap id="selectAll" type="com.survey.entity.FriendCircleDateVo">-->
+<!--        <result property="name" column="name"/>-->
+<!--        <collection property="list" ofType="com.survey.entity.FriendCircleDateVos">-->
+<!--            <result property="flagId" column="flagId"/>-->
+<!--            <result property="flagName" column="flagName"/>-->
+<!--            <result property="money" column="money"/>-->
+<!--            <result property="circleId" column="circleId"/>-->
+<!--            <result property="count" column="count"/>-->
+<!--            <result property="text" column="text"/>-->
+<!--            <result property="images" column="images"/>-->
+<!--            <result property="createTime" column="createTime"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+</mapper>

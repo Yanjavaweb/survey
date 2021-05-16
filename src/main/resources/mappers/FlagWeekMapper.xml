@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.FlagWeekMapper">
+    <insert id="createFlagWeek">
+        insert into `flag_week`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                `flag_id`,
+            </if>
+            <if test="end != null">
+                `end_time`,
+            </if>
+            <if test="flagCount !=null">
+                `flag_count`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                #{flagId},
+            </if>
+            <if test="end != null">
+                #{end},
+            </if>
+            <if test="flagCount !=null">
+                #{flagCount}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateCircuSeeCount">
+        update `flag_week`
+        <set>
+            <if test="circuseeCount != null">
+                circusee_count = circusee_count +1
+            </if>
+        </set>
+        where `flag_id` = #{flagId}
+    </update>
+    <update id="updatefinishCount">
+        update `flag_week`
+        <set>
+            <if test="finishCount != null">
+                finish_count = finish_count +1
+            </if>
+        </set>
+        where `flag_id` = #{flagId}
+    </update>
+    <update id="updateIsFlag">
+        update `flag_week`
+        <set>
+            <if test="isFlag != null">
+                `isflag` = 1
+            </if>
+        </set>
+        where `flag_id` = #{flagId}
+    </update>
+    <select id="selectWeekFlagId" resultType="com.survey.entity.FlagWeek">
+        select `flag_id`
+        from `flag_week`
+    </select>
+    <select id="selectAll" resultType="com.survey.entity.FlagWeek">
+        select *
+        from `flag_week`
+    </select>
+</mapper>

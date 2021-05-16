@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.PsychicMapper">
+    <select id="getAll" resultMap="getAll">
+        SELECT p.`id`-1 as id, p.`type`, t.`two_ type` as twoType, t.`website` as website, t.`content` as content
+        FROM `psychic` as p
+        INNER JOIN `two_ psychic` as t
+        on p.id = t.psychic_id
+    </select>
+    <resultMap id="getAll" type="com.survey.entity.PsychicDateVo">
+        <result property="name" column="type"/>
+        <result property="id" column="id"/>
+        <collection property="psychicDateVos" ofType="com.survey.entity.PsychicDateVos">
+            <result property="twoType" column="twoType"/>
+            <result property="content" column="content"/>
+            <result property="website" column="website"/>
+        </collection>
+    </resultMap>
+</mapper>

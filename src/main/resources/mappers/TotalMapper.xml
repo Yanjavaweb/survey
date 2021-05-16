@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.TotalMapper">
+    <insert id="inserts">
+        insert into total
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="count != null">
+                `count`,
+            </if>
+            <if test="score != null">
+                `score`,
+            </if>
+            <if test="userId != null">
+                `user_id`
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null">
+                #{type},
+            </if>
+            <if test="count != null">
+                #{count},
+            </if>
+            <if test="score != null">
+                #{score},
+            </if>
+            <if test="userId != null">
+                #{userId}
+            </if>
+        </trim>
+    </insert>
+    <update id="update">
+        update total
+        <set>
+            <if test="id != null">
+                id=#{id},
+            </if>
+            <if test="type != null">
+                type=#{type},
+            </if>
+            <if test="count != null">
+                count=#{count},
+            </if>
+            <if test="score != null">
+                score=#{score},
+            </if>
+            <if test="userId">
+                user_id=#{userId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="selectAll" resultType="com.survey.entity.Total">
+        select id,type,count,score,user_id
+        from total
+    </select>
+    <select id="selectByUserId" resultType="com.survey.entity.Total">
+        select id,type,count,score,user_id
+        from total
+        where user_id = #{userId}
+    </select>
+    <select id="selectByType" resultType="java.lang.Integer">
+        select COALESCE(count(type),0) as type
+        from total
+        where type=#{type}
+    </select>
+    <select id="selectByScore" resultType="com.survey.entity.Total">
+        select id,type,count,score,user_id
+        from total
+        where type = #{type}
+        order by
+        score
+        desc
+        limit 0,10
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        select  COALESCE(count(id),0)
+        from total
+    </select>
+    <select id="getHollandTotal" resultType="java.lang.Integer">
+        select  COALESCE(count(type),0)
+        from total
+    </select>
+    <select id="selectGroupByType" resultType="com.survey.entity.Total">
+        select `type`
+        from `total`
+        group by `type`;
+    </select>
+    <select id="getCount" resultMap="selectAll">
+        select `type`, count(*)
+        from `total`
+        where `type` = #{type}
+    </select>
+    <select id="match" resultType="com.survey.entity.User">
+       select u.`username`, u.`phone`, u.`result`, u.`grade`, u.`gender`, u.`sno`, u.`college`, u.`major`, u.`classes`
+       from `user` as u
+       inner join `total` as t
+       on u.`result` = #{result} and u.id = t.`user_id`
+    	GROUP BY t.`user_id`
+        order by t.`count` DESC
+        limit 0, #{PigeSize}
+
+    </select>
+    <resultMap id="selectAll" type="com.survey.entity.TotalDateVo">
+            <result column="type" property="name"/>
+            <result column="count(*)" property="value"/>
+    </resultMap>
+</mapper>

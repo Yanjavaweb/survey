@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.TestMapper">
+    <insert id="insertTest">
+        insert into test
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="alias != null">
+                alias,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="alias != null">
+                #{alias},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateTest">
+        update test
+        <set>
+            <if test="id != null">
+                id=#{id},
+            </if>
+            <if test="name != null">
+                name=#{name},
+            </if>
+            <if test="alias != null">
+                alias=#{alias},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteTest">
+        delete from test
+        where id=#{id}
+    </delete>
+    <select id="allTest" resultType="com.survey.entity.Test">
+        select id,name,alias,test_count
+        from test
+    </select>
+    <select id="selectById" resultType="com.survey.entity.Test">
+        select id,name,alias,test.test_count
+        from test
+        where id = #{id}
+    </select>
+    <select id="countById" resultType="java.lang.Integer">
+        update test
+        set test_count = test_count + 1
+        where id=#{id}
+    </select>
+    <select id="selectByAlias" resultType="com.survey.entity.QuestionIndex">
+        select `content_index`
+        from question_index i, test t
+        where t.alias = i.index
+        group by `content_index`
+    </select>
+    <select id="getList" resultMap="selectAll">
+    SELECT a.content_index AS contentIndex,b.`type` AS TYPE,b.`content_list` AS contentList
+    FROM `question_index` AS a
+    LEFT JOIN`question_list` AS b ON a.`number`=b.`number`
+    ORDER BY a.`id`,b.`id`
+    </select>
+    <resultMap id="selectAll" type="com.survey.entity.QuestionDateVo">
+        <result column="contentIndex" property="contentIndex"/>
+        <collection property="questionDateListVos" ofType="com.survey.entity.QuestionDateListVo" >
+            <result column="type" property="type"/>
+            <collection property="contentList" ofType="com.survey.entity.QuestioncontentDateListVo">
+                <result column="contentList" property="content"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+</mapper>

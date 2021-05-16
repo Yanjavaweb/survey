@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.ConsultMapper">
+    <select id="getAll" resultMap="selectAll">
+        SELECT c.`type` as type, t.`title` as title, t.`content` as content, t.`website` as website, t.`vator` as vator, t.`create_time` as createTime
+        FROM `consult` as c
+        INNER JOIN `two_ consult` as t
+        ON c.`id` = t.`consult_id`
+    </select>
+    <resultMap id="selectAll" type="com.survey.entity.ConsultDateVo">
+        <result property="type" column="type"/>
+        <collection property="consultDateVos" ofType="com.survey.entity.ConsultDateVos">
+            <result property="title" column="title"/>
+            <result property="content" column="content"/>
+            <result property="website" column="website"/>
+            <result property="vator" column="vator"/>
+            <result property="createTime" column="createTime"/>
+        </collection>
+    </resultMap>
+</mapper>

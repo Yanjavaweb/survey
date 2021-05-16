@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.CircuSeeMapper">
+    <insert id="createCircuSee">
+        insert into `circu_see`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                `flag_id`,
+            </if>
+            <if test="userId != null">
+                `user_id`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                #{flagId},
+            </if>
+            <if test="userId != null">
+                #{userId}
+            </if>
+        </trim>
+    </insert>
+    <delete id="deleteFlag">
+        delete
+        from `circu_see`
+        where `flag_id` = #{flagId}
+    </delete>
+    <select id="getAll" resultType="com.survey.entity.CircleSee">
+        select `flag_id`, `user_id`
+        from `circu_see`
+    </select>
+    <select id="getUserCount" resultType="java.lang.Integer">
+        select count(*)
+        from `circu_see`
+        where `flag_id` = #{flagId}
+    </select>
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(*)
+        from `circu_see`
+        where `user_id` = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.FlagMapper">
+
+    <insert id="createFlag">
+        insert into `flag`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flagName != null">
+                `flag_name`,
+            </if>
+            <if test="userId != null">
+                `user_id`,
+            </if>
+            <if test="money !=null">
+                `money`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="flagName != null">
+                #{flagName},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="money !=null">
+                #{money}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateUserMoney">
+        update `user`
+        <set>
+            <if test="money != null">
+                `money` = `money` + #{money}
+            </if>
+        </set>
+        where `id` = #{userId}
+    </update>
+    <update id="updateFlagMoney">
+        update `flag`
+        <set>
+            <if test="money != null">
+                `money` = 0
+            </if>
+        </set>
+        where `id` = #{flagId}
+    </update>
+    <update id="updateFlagMoney1">
+        update `user`
+        <set>
+            <if test="money != null">
+                `money` = #{money}
+            </if>
+        </set>
+        where `id` = #{userId}
+    </update>
+    <select id="getFlagId" resultType="java.lang.Integer">
+        select `id`
+        from `flag`
+        where `flag_name` = #{flagName} and `user_id` = #{userId}
+    </select>
+    <select id="getAll" resultType="com.survey.entity.Flag">
+        select `user_id`, `flag_name`
+        from `flag`
+    </select>
+    <select id="getDayClock" resultType="com.survey.entity.Clock">
+        SELECT f.`flag_name`, f.`money`, d.`flag_id`, d.`circusee_count`, d.`recent_time`, d.`isflag`, d.`finish_count`, d.`flag_count`
+        from `flag` as f
+        INNER JOIN `flag_day` as d
+        ON f.`user_id` = #{userId} and f.`id` = d.`flag_id`
+    </select>
+    <select id="getWeekClock" resultType="com.survey.entity.Clock">
+        SELECT f.`flag_name`, f.`money`, w.`flag_id`, w.`circusee_count`, w.`recent_time`, w.`isflag`, w.`finish_count`, w.`flag_count`
+        from `flag` as f
+        INNER JOIN `flag_week` as w
+        ON f.`user_id` = #{userId} and f.`id` = w.`flag_id`
+    </select>
+    <select id="getMoney" resultType="java.lang.Integer">
+        select `money`
+        from `flag`
+        where `id` = #{flagId}
+    </select>
+    <select id="selectUserId" resultType="com.survey.entity.CircleSee">
+        select `user_id`
+        from `circu_see`
+        where `flag_id` = #{flagId}
+    </select>
+    <select id="selectFlagCircle" resultMap="selectAll">
+         SELECT   u.`name`, f.`flag_name` as flagName, f.`money`,  c.`text`, c.`create_time` as createTime,  i.`images`, d.circusee_count as circuSeeCount, d.finish_count as finishCount, d.flag_count as flagCount, d.isflag
+        FROM `user` as u
+        INNER JOIN `flag` as f
+        inner JOIN `friend_circle` as c
+        INNER JOIN `image` as i
+		INNER JOIN `flag_day` d
+        on u.`id` = #{userId}  and c.`id` = i.`circle_id` and c.`flag_id` = #{flagId} and f.id = #{flagId} and d.flag_id = #{flagId}
+		group by c.id
+		order by c.id desc
+    </select>
+    <resultMap id="selectAll" type="com.survey.entity.FlagDayCircleDataVo">
+        <result property="name" column="name"/>
+        <result property="money" column="money"/>
+        <result property="flagName" column="flagName"/>
+        <result property="circuSeeCount" column="circuSeeCount"/>
+        <result property="finishCount" column="finishCount"/>
+        <result property="flagCount" column="flagCount"/>
+        <result property="isFlag" column="isFlag"/>
+        <collection property="list" ofType="com.survey.entity.FlagDayCircleDataVos">
+            <result property="text" column="text"/>
+            <result property="createTime" column="createTime"/>
+            <result property="images" column="images"/>
+        </collection>
+    </resultMap>
+    <select id="selectByFlagId" resultType="java.lang.Integer">
+        select `user_id`
+        from `flag`
+        where id = #{flagId}
+    </select>
+    <select id="selectFlagCircleWeek" resultMap="selectAll">
+         SELECT   u.`name`, f.`flag_name` as flagName, f.`money`, c.`text`, c.`create_time` as createTime,  i.`images`, w.circusee_count as circuSeeCount, w.finish_count as finishCount, w.flag_count as flagCount, w.isflag
+        FROM `user` as u
+        INNER JOIN `flag` as f
+        inner JOIN `friend_circle` as c
+        INNER JOIN `image` as i
+		INNER JOIN `flag_week` w
+        on u.`id` = #{userId}  and c.`id` = i.`circle_id` and c.`flag_id` = #{flagId} and f.id = #{flagId} and w.flag_id = #{flagId}
+		group by c.id
+		order by c.id desc
+    </select>
+</mapper>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.UserMapper">
+    <insert id="insert"  parameterType="com.survey.entity.User" >
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">
+                username,
+            </if>
+            <if test="idCard != null">
+                id_card,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="result != null">
+                result,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="gender != null">
+            gender,
+        </if>
+            <if test="sno != null">
+                sno,
+            </if>
+            <if test="college != null">
+                college,
+            </if>
+            <if test="major != null">
+                major,
+            </if>
+            <if test="class != null">
+                class,
+            </if>
+            <if test="openId != null">
+                open_id
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">
+                #{username},
+            </if>
+            <if test="idCard != null">
+                #{idCard},
+            </if>
+            <if test="phone != null">
+                #{phone},
+            </if>
+            <if test="result != null">
+                #{result},
+            </if>
+            <if test="grade != null">
+                #{grade}
+            </if>
+            <if test="gender != null">
+                #{gender},
+            </if>
+            <if test="sno != null">
+                #{sno},
+            </if>
+            <if test="college != null">
+                #{college},
+            </if>
+            <if test="major != null">
+                #{major},
+            </if>
+            <if test="class != null">
+                #{class},
+            </if>
+            <if test="openId != null">
+                #{open_id)
+            </if>
+        </trim>
+    </insert>
+    <update id="update">
+        update user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="result != null">
+                result = #{result},
+            </if>
+            <if test="grade != null">
+                grade = #{grade}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="delete">
+        delete from user
+        where id = #{id}
+    </delete>
+    <select id="selectAll" resultType="com.survey.entity.User">
+        select id,username,id_card,phone,result,grade
+        from user
+    </select>
+    <select id="verifyPassword" resultType="java.lang.Integer">
+         select count(*)
+        from `user`
+        where `username` = #{username} and `id_card` = #{idCard} and `phone` = #{phone}
+    </select>
+    <select id="selectByName" resultType="java.lang.Integer">
+        select `id`
+        from `user`
+        where `username` = #{username}
+    </select>
+    <select id="selectByGrade" resultType="com.survey.entity.User">
+        select `id`
+        from user
+        where grade = #{grade}
+    </select>
+    <select id="getCount" resultType="com.survey.entity.User">
+        select *
+        from `total` as t
+        where t.`user_id` = #{Id}
+    </select>
+    <select id="GroupByGrade" resultType="com.survey.entity.User">
+        select `grade`
+        from `user`
+        group by `grade`
+    </select>
+    <select id="getFirstTen" resultType="com.survey.entity.UserDateVo">
+      SELECT  t.`type`, t.`count`, t.`score`, u.`username`, u.`grade`
+        FROM user u
+        INNER JOIN total t
+        on u.id = t.user_id and u.grade = #{grade}  and t.type = #{type}
+        ORDER BY t.count DESC
+        LIMIT 0,10
+    </select>
+    <select id="getScale" resultMap="selectAll">
+        SELECT `grade`, `gender`, count(`gender`) as counts
+        FROM `user`
+        where `result` like #{type}"__" and gender = #{gender} and grade = #{grade}
+    </select>
+    <select id="GroupByGender" resultType="com.survey.entity.User">
+        select `gender`
+        from `user`
+        group by `gender`
+    </select>
+    <select id="getScales" resultMap="selectAlls">
+        SELECT  `gender`, count(`gender`) as counts
+        FROM `user`
+        where `result` like #{type}"__" and gender = #{gender}
+    </select>
+    <select id="getOpenId" resultType="com.survey.entity.User">
+        select `id`, `open_id`
+        from `user`
+        where open_id = #{openId}
+    </select>
+    <select id="selectByUserId" resultType="com.survey.entity.User">
+        select *
+        from `user`
+        where `id` = #{userId}
+    </select>
+    <resultMap id="selectAlls" type="com.survey.entity.Scale">
+        <result property="gender" column="gender"/>
+        <result property="count" column="counts"/>
+    </resultMap>
+    <resultMap id="selectAll" type="com.survey.entity.Scale">
+        <result property="gender" column="gender"/>
+        <result property="count" column="counts"/>
+    </resultMap>
+
+
+</mapper>

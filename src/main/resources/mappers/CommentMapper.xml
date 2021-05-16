@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.CommentMapper">
+    <insert id="createComment">
+        insert into `comment`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="circleId != null">
+                `circle_id`,
+            </if>
+            <if test="userId != null">
+                `user_id`,
+            </if>
+            <if test="content !=null">
+                `content`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="circleId != null">
+                #{circleId},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="content !=null">
+                #{content}
+            </if>
+        </trim>
+    </insert>
+</mapper>

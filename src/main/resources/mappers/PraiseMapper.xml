@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.PraiseMapper">
+    <insert id="createCount">
+        insert into `praise`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="circleId != null">
+                `circle_id`,
+            </if>
+            <if test="userId != null">
+                `user_id`,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="circleId != null">
+                #{circleId},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+        </trim>
+    </insert>
+    <select id="selectAll" resultType="com.survey.entity.Praise">
+        select `circle_id`, `user_id`
+        from `praise`
+    </select>
+</mapper>

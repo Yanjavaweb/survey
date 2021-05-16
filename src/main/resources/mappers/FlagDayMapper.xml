@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.survey.mapper.FlagDayMapper">
+
+    <insert id="createFlagDay">
+        insert into `flag_day`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                `flag_id`,
+            </if>
+            <if test="startTime != null">
+                `start_time`,
+            </if>
+            <if test="endTime !=null">
+                `end_time`,
+            </if>
+            <if test="flagCount !=null">
+                `flag_count`
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="flagId != null">
+                #{flagId},
+            </if>
+            <if test="startTime != null">
+                #{startTime},
+            </if>
+            <if test="endTime !=null">
+                #{endTime},
+            </if>
+            <if test="flagCount !=null">
+                #{flagCount}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateCircuSeeCount">
+        update `flag_day`
+        <set>
+            <if test="circuseeCount != null">
+                circusee_count = circusee_count +1
+            </if>
+        </set>
+        where `flag_id` = #{flagId}
+    </update>
+    <update id="updatefinishCount">
+        update `flag_day`
+        <set>
+            <if test="finishCount != null">
+                finish_count = finish_count +1
+            </if>
+        </set>
+        where `flag_id` = #{flagId}
+    </update>
+    <update id="updateIsFlag">
+        update `flag_day`
+        <set>
+            <if test="isFlag != null">
+                `isflag` = 1
+            </if>
+        </set>
+        where `flag_id` = #{flagId}
+    </update>
+    <select id="selectDayFlagId" resultType="com.survey.entity.FlagDay">
+        select `flag_id`
+        from `flag_day`
+    </select>
+    <select id="getAll" resultType="com.survey.entity.FlagDay">
+        select *
+        from `flag_day`
+    </select>
+</mapper>
